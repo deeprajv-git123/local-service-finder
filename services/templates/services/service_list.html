@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ category.name }} Providers</title>
+</head>
+<body>
+    <h2>Available {{ category.name }}s</h2>
+    
+    <ul>
+        {% for service in services %}
+            <li>
+                <strong>{{ service.title }}</strong> by {{ service.provider.username }}<br>
+                Rate: ₹{{ service.hourly_rate }} / hr<br>
+                <button>Book Now</button>
+            </li>
+        {% empty %}
+            <p>No {{ category.name }}s available at the moment.</p>
+        {% endfor %}
+    </ul>
+    
+    <a href="{% url 'category_list' %}">Back to Categories</a>
+</body>
+</html>

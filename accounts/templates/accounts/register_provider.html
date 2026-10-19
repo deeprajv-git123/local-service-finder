@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Provider Registration - Local Service Finder</title>
+</head>
+<body>
+    <h2>Sign Up as a Service Provider</h2>
+    <p>List your skills and connect with local customers.</p>
+    
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Create Provider Account</button>
+    </form>
+
+    <p>Already have an account? <a href="{% url 'login' %}">Log in here</a>.</p>
+</body>
+</html>

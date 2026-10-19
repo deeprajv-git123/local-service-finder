@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Registration - Local Service Finder</title>
+</head>
+<body>
+    <h2>Sign Up as a Customer</h2>
+    <p>Find the best local professionals for your needs.</p>
+    
+    <form method="POST">
+        <!-- csrf_token is a security feature Django requires for all forms -->
+        {% csrf_token %}
+        
+        <!-- form.as_p tells Django to render the form fields automatically as paragraphs -->
+        {{ form.as_p }}
+        
+        <button type="submit">Create Customer Account</button>
+    </form>
+
+    <p>Already have an account? <a href="{% url 'login' %}">Log in here</a>.</p>
+</body>
+</html>

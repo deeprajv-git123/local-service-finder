@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Log In - Local Service Finder</title>
+</head>
+<body>
+    <h2>Log In</h2>
+    
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Log In</button>
+    </form>
+
+    <p>Don't have an account?</p>
+    <ul>
+        <li><a href="{% url 'register_customer' %}">Sign up as Customer</a></li>
+        <li><a href="{% url 'register_provider' %}">Sign up as Service Provider</a></li>
+    </ul>
+</body>
+</html>

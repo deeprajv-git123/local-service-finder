@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Local Service Finder</title>
+</head>
+<body>
+    <h1>Welcome to Local Service Finder</h1>
+    <p>Find trusted local professionals or list your own services today.</p>
+    
+    <div>
+        {% if user.is_authenticated %}
+            <h3>Welcome back, {{ user.username }}!</h3>
+            <p>Customer Status: {{ user.is_customer }}</p>
+            <p>Provider Status: {{ user.is_provider }}</p>
+            
+            <!-- Django uses a POST request for logout in newer versions for security -->
+            <form action="{% url 'logout' %}" method="post">
+                {% csrf_token %}
+                <button type="submit">Log Out</button>
+            </form>
+        {% else %}
+            <h3>Get Started</h3>
+            <ul>
+                <li><a href="{% url 'register_customer' %}">Sign up as a Customer</a></li>
+                <li><a href="{% url 'register_provider' %}">Sign up as a Service Provider</a></li>
+                <li><a href="{% url 'login' %}">Log In</a></li>
+            </ul>
+        {% endif %}
+    </div>
+</body>
+</html>
