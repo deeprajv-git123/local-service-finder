@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from .models import Category, Service, Booking
 from .forms import BookingForm
 
@@ -26,7 +27,8 @@ def book_service(request, service_id):
             booking.service = service
             booking.save()
             
-            # For now, redirect home. Later we will redirect to a User Dashboard!
+            # Trigger the success flash message
+            messages.success(request, 'Your booking request has been sent successfully!')
             return redirect('dashboard') 
     else:
         form = BookingForm()
@@ -60,6 +62,9 @@ def update_booking_status(request, booking_id, new_status):
         if new_status in ['Accepted', 'Completed', 'Cancelled']:
             booking.status = new_status
             booking.save()
+
+            # Trigger the status update flash message
+            messages.success(request, f'Job successfully marked as {new_status}!')
             
     # Refresh the dashboard page
     return redirect('dashboard')

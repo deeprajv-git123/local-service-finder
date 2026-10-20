@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Local Service Finder</title>
+</head>
+<body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f9;">
+    
+    <!-- Global Navigation Bar -->
+    <nav style="background-color: #2c3e50; padding: 15px 20px; color: white;">
+        <a href="{% url 'category_list' %}" style="color: white; margin-right: 20px; text-decoration: none; font-weight: bold;">Browse Services</a>
+        
+        {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}" style="color: white; margin-right: 20px; text-decoration: none;">My Dashboard</a>
+            
+            <!-- We float this to the right side of the screen -->
+            <div style="float: right;">
+                <span style="margin-right: 15px;">Hello, {{ user.username }}!</span>
+                <!-- Note: Update the logout URL depending on what you named it in your accounts app -->
+                <a href="{% url 'logout' %}" style="color: #e74c3c; text-decoration: none; font-weight: bold;">Log Out</a>
+            </div>
+        {% else %}
+            <div style="float: right;">
+                <a href="{% url 'login' %}" style="color: #3498db; text-decoration: none; font-weight: bold;">Log In</a>
+            </div>
+        {% endif %}
+    </nav>
+
+    <!-- Main Content Area -->
+    <div style="padding: 20px; max-width: 800px; margin: auto;">
+        
+        <!-- Global Flash Messages -->
+        {% if messages %}
+            {% for message in messages %}
+                <div style="background-color: #d4edda; color: #155724; padding: 15px; margin-bottom: 20px; border: 1px solid #c3e6cb; border-radius: 5px;">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- This is where all other pages will inject their specific HTML -->
+        {% block content %}
+        {% endblock %}
+        
+    </div>
+
+</body>
+</html>

@@ -1,20 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Service Categories</title>
-</head>
-<body>
+{% extends 'services/base.html' %}
+
+{% block content %}
     <h2>Select a Service Category</h2>
-    <ul>
+    <ul style="list-style-type: none; padding: 0;">
         {% for category in categories %}
-            <li>
-                <a href="{% url 'service_list' category.id %}">{{ category.name }}</a>
+            <li style="background: white; margin-bottom: 10px; border: 1px solid #ccc; padding: 15px; border-radius: 8px;">
+                <a href="{% url 'service_list' category.id %}" style="text-decoration: none; color: #2c3e50; font-size: 18px; font-weight: bold;">{{ category.name }}</a>
             </li>
         {% empty %}
             <p>No categories available right now.</p>
         {% endfor %}
     </ul>
-    <a href="{% url 'home' %}">Back to Home</a>
-</body>
-</html>
+{% endblock %}

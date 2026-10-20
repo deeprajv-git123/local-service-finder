@@ -1,11 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>My Dashboard</title>
-</head>
-<body>
-    <h2>Welcome to your Dashboard, {{ user.username }}!</h2>
+{% extends 'services/base.html' %}
+
+{% block content %}
+    <h2>Welcome to your Dashboard!</h2>
 
     {% if user.is_provider %}
         <h3>Job Requests Received</h3>
@@ -13,9 +9,9 @@
         <h3>Your Booked Services</h3>
     {% endif %}
 
-    <ul>
+    <ul style="list-style-type: none; padding: 0;">
         {% for booking in bookings %}
-            <li style="margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px;">
+            <li style="background: white; margin-bottom: 20px; border: 1px solid #ccc; padding: 15px; border-radius: 8px;">
                 {% if user.is_provider %}
                     <strong>Customer:</strong> {{ booking.customer.username }} <br>
                 {% else %}
@@ -26,14 +22,14 @@
                 <strong>Status:</strong> <em>{{ booking.status }}</em> <br>
                 <strong>Details:</strong> {{ booking.description }} <br>
                 <strong>Requested On:</strong> {{ booking.created_at|date:"M d, Y" }}
-
+                
                 {% if user.is_provider and booking.status == 'Pending' %}
                     <br><br>
                     <a href="{% url 'update_booking_status' booking.id 'Accepted' %}">
-                        <button style="background-color: green; color: white; padding: 5px 10px; border: none; cursor: pointer;">Accept Job</button>
+                        <button style="background-color: #27ae60; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer;">Accept Job</button>
                     </a>
                     <a href="{% url 'update_booking_status' booking.id 'Cancelled' %}">
-                        <button style="background-color: red; color: white; padding: 5px 10px; border: none; cursor: pointer; margin-left: 10px;">Decline Job</button>
+                        <button style="background-color: #c0392b; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; margin-left: 10px;">Decline Job</button>
                     </a>
                 {% endif %}
             </li>
@@ -41,8 +37,4 @@
             <p>You have no bookings right now.</p>
         {% endfor %}
     </ul>
-
-    <br>
-    <a href="{% url 'home' %}">Back to Home</a>
-</body>
-</html>
+{% endblock %}
