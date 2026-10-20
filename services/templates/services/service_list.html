@@ -12,7 +12,7 @@
             <li>
                 <strong>{{ service.title }}</strong> by {{ service.provider.username }}<br>
                 Rate: ₹{{ service.hourly_rate }} / hr<br>
-                <button>Book Now</button>
+                <a href="{% url 'book_service' service.id %}"><button>Book Now</button></a>
             </li>
         {% empty %}
             <p>No {{ category.name }}s available at the moment.</p>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book {{ service.title }}</title>
+</head>
+<body>
+    <h2>Book Service: {{ service.title }}</h2>
+    <p><strong>Provider:</strong> {{ service.provider.username }}</p>
+    <p><strong>Rate:</strong> ₹{{ service.hourly_rate }} / hr</p>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit Booking Request</button>
+    </form>
+
+    <br>
+    <a href="{% url 'service_list' service.category.id %}">Cancel and go back</a>
+</body>
+</html>
