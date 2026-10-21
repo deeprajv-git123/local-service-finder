@@ -53,20 +53,23 @@ def dashboard(request):
 
 @login_required
 def update_booking_status(request, booking_id, new_status):
-    # Find the exact booking in the database
     booking = get_object_or_404(Booking, id=booking_id)
     
-    # SECURITY CHECK: Make sure the logged-in user is the provider for this specific job
+    # Provider logic: Can Accept/Cancel a Pending job, or Complete an Accepted job
     if getattr(request.user, 'is_provider', False) and request.user == booking.service.provider:
-        # Check if the new status is valid based on our STATUS_CHOICES
-        if new_status in ['Accepted', 'Completed', 'Cancelled']:
+        if (booking.status == 'Pending' and new_status in ['Accepted', 'Cancelled']) or \
+           (booking.status == 'Accepted' and new_status == 'Completed'):
             booking.status = new_status
             booking.save()
-
-            # Trigger the status update flash message
             messages.success(request, f'Job successfully marked as {new_status}!')
-
-    # Refresh the dashboard page
+            
+    # Customer logic: Can Cancel their own booking if it is still Pending
+    elif request.user == booking.customer:
+        if booking.status == 'Pending' and new_status == 'Cancelled':
+            booking.status = 'Cancelled'
+            booking.save()
+            messages.success(request, 'Your booking request has been cancelled.')
+            
     return redirect('dashboard')
 
 

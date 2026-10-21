@@ -23,13 +23,28 @@
                 <strong>Details:</strong> {{ booking.description }} <br>
                 <strong>Requested On:</strong> {{ booking.created_at|date:"M d, Y" }}
                 
+                <!-- Provider Action: Pending Jobs -->
                 {% if user.is_provider and booking.status == 'Pending' %}
                     <br><br>
-                    <a href="{% url 'update_booking_status' booking.id 'Accepted' %}">
+                    <a href="{% url 'update_booking_status' booking.id 'Accepted' %}" style="text-decoration: none;">
                         <button style="background-color: #27ae60; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer;">Accept Job</button>
                     </a>
-                    <a href="{% url 'update_booking_status' booking.id 'Cancelled' %}">
+                    <a href="{% url 'update_booking_status' booking.id 'Cancelled' %}" style="text-decoration: none;">
                         <button style="background-color: #c0392b; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; margin-left: 10px;">Decline Job</button>
+                    </a>
+                
+                <!-- Provider Action: Accepted Jobs -->
+                {% elif user.is_provider and booking.status == 'Accepted' %}
+                    <br><br>
+                    <a href="{% url 'update_booking_status' booking.id 'Completed' %}" style="text-decoration: none;">
+                        <button style="background-color: #2980b9; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer;">Mark as Completed</button>
+                    </a>
+                
+                <!-- Customer Action: Cancel Pending Request -->
+                {% elif not user.is_provider and booking.status == 'Pending' %}
+                    <br><br>
+                    <a href="{% url 'update_booking_status' booking.id 'Cancelled' %}" style="text-decoration: none;">
+                        <button style="background-color: #e74c3c; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer;">Cancel Request</button>
                     </a>
                 {% endif %}
             </li>
