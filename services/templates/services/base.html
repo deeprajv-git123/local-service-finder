@@ -12,16 +12,23 @@
         
         {% if user.is_authenticated %}
             <a href="{% url 'dashboard' %}" style="color: white; margin-right: 20px; text-decoration: none;">My Dashboard</a>
+
+            {% if user.is_provider %}
+                <a href="{% url 'manage_profile' %}" style="color: #f1c40f; margin-right: 20px; text-decoration: none; font-weight: bold;">Manage Profile</a>
+            {% endif %}
             
             <!-- We float this to the right side of the screen -->
             <div style="float: right;">
                 <span style="margin-right: 15px;">Hello, {{ user.username }}!</span>
-                <!-- Note: Update the logout URL depending on what you named it in your accounts app -->
-                <a href="{% url 'logout' %}" style="color: #e74c3c; text-decoration: none; font-weight: bold;">Log Out</a>
+                <form method="POST" action="{% url 'logout' %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" style="background: none; border: none; color: #e74c3c; font-weight: bold; cursor: pointer; font-size: 16px; padding: 0;">Log Out</button>
+                </form>
             </div>
         {% else %}
             <div style="float: right;">
                 <a href="{% url 'login' %}" style="color: #3498db; text-decoration: none; font-weight: bold;">Log In</a>
+                <a href="{% url 'signup' %}" style="color: #27ae60; text-decoration: none; font-weight: bold;">Sign Up</a>
             </div>
         {% endif %}
     </nav>

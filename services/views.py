@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Category, Service, Booking
-from .forms import BookingForm
+from .forms import BookingForm, ServiceProfileForm
 
 def category_list(request):
     categories = Category.objects.all()
@@ -65,6 +65,35 @@ def update_booking_status(request, booking_id, new_status):
 
             # Trigger the status update flash message
             messages.success(request, f'Job successfully marked as {new_status}!')
-            
+
     # Refresh the dashboard page
     return redirect('dashboard')
+
+
+@login_required
+def manage_profile(request):
+    # Only allow providers to access this page
+    if not getattr(request.user, 'is_provider', False):
+        messages.error(request, "Only registered providers can create a service profile.")
+        return redirect('category_list')
+
+    # Check if the provider already has a profile
+    try:
+        service_profile = request.user.service_profile
+    except:
+        service_profile = None
+
+    if request.method == 'POST':
+        # Pass the existing profile (if it exists) to the form so it updates instead of duplicating
+        form = ServiceProfileForm(request.POST, instance=service_profile)
+        if form.is_valid():
+            profile = form.save(commit=False)
+            profile.provider = request.user
+            profile.save()
+            
+            messages.success(request, 'Service profile saved successfully!')
+            return redirect('dashboard')
+    else:
+        form = ServiceProfileForm(instance=service_profile)
+        
+    return render(request, 'services/manage_profile.html', {'form': form})
