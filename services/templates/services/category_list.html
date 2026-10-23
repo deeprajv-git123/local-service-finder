@@ -1,6 +1,38 @@
 {% extends 'services/base.html' %}
 
 {% block content %}
+    <!-- Search Bar Form -->
+    <div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #ccc; margin-bottom: 25px;">
+        <form method="GET" action="{% url 'category_list' %}" style="display: flex; gap: 10px;">
+            <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Search for a service (e.g., mechanic, plumbing)..." style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px;">
+            <button type="submit" style="background-color: #2c3e50; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold;">Search</button>
+            {% if query %}
+                <a href="{% url 'category_list' %}" style="padding: 10px 15px; background-color: #e74c3c; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">Clear</a>
+            {% endif %}
+        </form>
+    </div>
+
+    <!-- If the user searched for something, show the matching services -->
+    {% if query %}
+        <h2>Search Results for "{{ query }}"</h2>
+        <ul style="list-style-type: none; padding: 0;">
+            {% for service in search_results %}
+                <li style="background: white; margin-bottom: 20px; border: 1px solid #ccc; padding: 15px; border-radius: 8px;">
+                    <strong>{{ service.title }}</strong> <span style="color: #7f8c8d;">({{ service.category.name }})</span> by {{ service.provider.username }}<br>
+                    <p style="margin: 8px 0; color: #555;">{{ service.description }}</p>
+                    <p style="margin: 10px 0; font-weight: bold;">Rate: ₹{{ service.hourly_rate }} / hr</p>
+                    <a href="{% url 'book_service' service.id %}">
+                        <button style="background-color: #3498db; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer;">Book Now</button>
+                    </a>
+                </li>
+            {% empty %}
+                <p>No services found matching "{{ query }}".</p>
+            {% endfor %}
+        </ul>
+        <hr style="margin: 30px 0; border: 0; border-top: 1px solid #ccc;">
+    {% endif %}
+
+    <!-- Standard Category List -->
     <h2>Select a Service Category</h2>
     <ul style="list-style-type: none; padding: 0;">
         {% for category in categories %}

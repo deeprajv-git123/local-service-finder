@@ -1,12 +1,28 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import Q
 from .models import Category, Service, Booking
 from .forms import BookingForm, ServiceProfileForm
 
 def category_list(request):
     categories = Category.objects.all()
-    return render(request, 'services/category_list.html', {'categories': categories})
+    query = request.GET.get('q')  # Grab the search term from the URL
+    search_results = None
+
+    if query:
+        # Search across service title, description, or category name (case-insensitive)
+        search_results = Service.objects.filter(
+            Q(title__icontains=query) |
+            Q(description__icontains=query) |
+            Q(category__name__icontains=query)
+        )
+
+    return render(request, 'services/category_list.html', {
+        'categories': categories,
+        'search_results': search_results,
+        'query': query
+    })
 
 def service_list(request, category_id):
     category = get_object_or_404(Category, id=category_id)
