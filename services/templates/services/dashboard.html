@@ -46,6 +46,19 @@
                     <a href="{% url 'update_booking_status' booking.id 'Cancelled' %}" style="text-decoration: none;">
                         <button style="background-color: #e74c3c; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer;">Cancel Request</button>
                     </a>
+
+                <!-- Customer Action: Review Completed Booking -->
+                {% elif not user.is_provider and booking.status == 'Completed' %}
+                    <br><br>
+                    {% if booking.review %}
+                        <span style="background-color: #fcf8e3; color: #8a6d3b; padding: 5px 10px; border-radius: 4px; border: 1px solid #faebcc; font-weight: bold; display: inline-block;">
+                            Your Rating: {{ booking.review.rating }}/5 ★ — "{{ booking.review.comment }}"
+                        </span>
+                    {% else %}
+                        <a href="{% url 'add_review' booking.id %}" style="text-decoration: none;">
+                            <button style="background-color: #f39c12; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Leave a Review ★</button>
+                        </a>
+                    {% endif %}
                 {% endif %}
             </li>
         {% empty %}

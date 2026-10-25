@@ -5,12 +5,46 @@
     
     <ul style="list-style-type: none; padding: 0;">
         {% for service in services %}
-            <li style="background: white; margin-bottom: 20px; border: 1px solid #ccc; padding: 15px; border-radius: 8px;">
-                <strong>{{ service.title }}</strong> by {{ service.provider.username }}<br>
-                <p style="margin: 10px 0;">Rate: ₹{{ service.hourly_rate }} / hr</p>
+            <li style="background: white; margin-bottom: 25px; border: 1px solid #ccc; padding: 20px; border-radius: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                    <h3 style="margin: 0; color: #2c3e50;">{{ service.title }}</h3>
+                    <span style="font-weight: bold; font-size: 16px; color: #27ae60;">₹{{ service.hourly_rate }} / hr</span>
+                </div>
+                <p style="margin: 5px 0 10px 0; color: #7f8c8d;">Offered by <strong>{{ service.provider.username }}</strong></p>
+
+                <!-- Average Rating Badge -->
+                <div style="margin-bottom: 12px;">
+                    {% if service.average_rating %}
+                        <span style="background-color: #fef9e7; color: #f39c12; font-weight: bold; padding: 4px 8px; border-radius: 4px; border: 1px solid #f9e79f;">
+                            ★ {{ service.average_rating }} / 5.0 ({{ service.review_count }} review{{ service.review_count|pluralize }})
+                        </span>
+                    {% else %}
+                        <span style="color: #95a5a6; font-size: 14px;">No reviews yet</span>
+                    {% endif %}
+                </div>
+
+                <p style="margin: 10px 0 15px 0; color: #444;">{{ service.description }}</p>
+
                 <a href="{% url 'book_service' service.id %}">
-                    <button style="background-color: #3498db; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer;">Book Now</button>
+                    <button style="background-color: #3498db; color: white; padding: 8px 14px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Book Now</button>
                 </a>
+
+                <!-- Customer Reviews List -->
+                {% if service.reviews.all %}
+                    <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
+                        <h4 style="margin: 0 0 10px 0; font-size: 14px; color: #555;">Customer Feedback:</h4>
+                        <ul style="list-style-type: none; padding: 0; margin: 0;">
+                            {% for rev in service.reviews.all %}
+                                <li style="background: #fafafa; border: 1px solid #eee; border-radius: 6px; padding: 10px; margin-bottom: 8px;">
+                                    <strong style="color: #f39c12;">{{ rev.rating }} ★</strong> 
+                                    <span style="color: #555;">— {{ rev.comment }}</span>
+                                    <br>
+                                    <small style="color: #999;">by {{ rev.customer.username }} on {{ rev.created_at|date:"M d, Y" }}</small>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
             </li>
         {% empty %}
             <p>No {{ category.name }}s available at the moment.</p>

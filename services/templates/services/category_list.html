@@ -19,6 +19,15 @@
             {% for service in search_results %}
                 <li style="background: white; margin-bottom: 20px; border: 1px solid #ccc; padding: 15px; border-radius: 8px;">
                     <strong>{{ service.title }}</strong> <span style="color: #7f8c8d;">({{ service.category.name }})</span> by {{ service.provider.username }}<br>
+                    <!-- Rating Badge -->
+                    <div style="margin: 6px 0;">
+                        {% if service.average_rating %}
+                            <span style="color: #f39c12; font-weight: bold; font-size: 14px;">★ {{ service.average_rating }} / 5.0 ({{ service.review_count }})</span>
+                        {% else %}
+                            <span style="color: #95a5a6; font-size: 13px;">No reviews yet</span>
+                        {% endif %}
+                    </div>
+                    
                     <p style="margin: 8px 0; color: #555;">{{ service.description }}</p>
                     <p style="margin: 10px 0; font-weight: bold;">Rate: ₹{{ service.hourly_rate }} / hr</p>
                     <a href="{% url 'book_service' service.id %}">

@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.db.models import Avg
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -26,6 +27,15 @@ class Service(models.Model):
     def __str__(self):
         return f"{self.title} - {self.provider.username}"
 
+    @property
+    def average_rating(self):
+        avg = self.reviews.aggregate(Avg('rating'))['rating__avg']
+        return round(avg, 1) if avg else None
+
+    @property
+    def review_count(self):
+        return self.reviews.count()
+
 class Booking(models.Model):
     STATUS_CHOICES = (
         ('Pending', 'Pending'),
@@ -49,4 +59,26 @@ class Booking(models.Model):
 
     def __str__(self):
         return f"{self.customer.username} - {self.service.title} ({self.status})"
+
+
+# Add this at the bottom of services/models.py:
+
+class Review(models.Model):
+    RATING_CHOICES = [
+        (5, '★★★★★ (5/5)'),
+        (4, '★★★★☆ (4/5)'),
+        (3, '★★★☆☆ (3/5)'),
+        (2, '★★☆☆☆ (2/5)'),
+        (1, '★☆☆☆☆ (1/5)'),
+    ]
+
+    booking = models.OneToOneField(Booking, on_delete=models.CASCADE, related_name='review')
+    service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name='reviews')
+    customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    rating = models.PositiveSmallIntegerField(choices=RATING_CHOICES, default=5)
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.rating} Stars - {self.service.title} by {self.customer.username}"
     

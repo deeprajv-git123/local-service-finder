@@ -1,5 +1,5 @@
 from django import forms
-from .models import Booking, Service
+from .models import Booking, Service, Review
 
 class BookingForm(forms.ModelForm):
     class Meta:
@@ -15,4 +15,12 @@ class ServiceProfileForm(forms.ModelForm):
         fields = ['category', 'title', 'description', 'hourly_rate']
         widgets = {
             'description': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Describe your experience and services...'}),
+        }
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ['rating', 'comment']
+        widgets = {
+            'comment': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Share your experience with this service...'}),
         }

@@ -2,8 +2,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q
-from .models import Category, Service, Booking
-from .forms import BookingForm, ServiceProfileForm
+from .models import Category, Service, Booking, Review
+from .forms import BookingForm, ServiceProfileForm, ReviewForm
 
 def category_list(request):
     categories = Category.objects.all()
@@ -116,3 +116,33 @@ def manage_profile(request):
         form = ServiceProfileForm(instance=service_profile)
         
     return render(request, 'services/manage_profile.html', {'form': form})
+
+
+@login_required
+def add_review(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id)
+
+    # Security check: only the customer who booked it can review, and only after completion
+    if request.user != booking.customer or booking.status != 'Completed':
+        messages.error(request, "You can only review jobs that have been marked as Completed.")
+        return redirect('dashboard')
+
+    # Prevent duplicate reviews
+    if hasattr(booking, 'review'):
+        messages.info(request, "You have already submitted a review for this booking.")
+        return redirect('dashboard')
+
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.booking = booking
+            review.service = booking.service
+            review.customer = request.user
+            review.save()
+            messages.success(request, "Thank you! Your review has been posted.")
+            return redirect('dashboard')
+    else:
+        form = ReviewForm()
+
+    return render(request, 'services/add_review.html', {'form': form, 'booking': booking})

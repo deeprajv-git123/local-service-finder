@@ -8,4 +8,5 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
     path('booking/<int:booking_id>/update/<str:new_status>/', views.update_booking_status, name='update_booking_status'),
     path('profile/', views.manage_profile, name='manage_profile'),
+    path('booking/<int:booking_id>/review/', views.add_review, name='add_review'),  # <-- New review route
 ]
